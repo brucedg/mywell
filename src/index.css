@@ -252,3 +252,29 @@ html, body, #root {
   text-align: center;
   padding: 16px;
 }
+
+.install-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 13px;
+  padding: 10px 20px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  margin-top: 10px;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.install-btn:hover {
+  border-color: var(--text-secondary);
+  color: var(--text);
+}
+
+.install-hint {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-align: center;
+  margin-top: 12px;
+}

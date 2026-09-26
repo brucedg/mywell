@@ -1,4 +1,5 @@
 import { useContacts } from '../hooks/useContacts'
+import { useInstallPrompt } from '../hooks/useInstallPrompt'
 
 const MESSAGE = "Hi, I need some help right now. Please check in on me."
 
@@ -9,6 +10,7 @@ interface Props {
 export default function Home({ onEditContacts }: Props) {
   const { contacts } = useContacts()
   const hasContacts = contacts.length > 0
+  const { canInstall, showIOSHint, alreadyInstalled, install } = useInstallPrompt()
 
   function sendAlert() {
     if (!hasContacts) return
@@ -46,6 +48,15 @@ export default function Home({ onEditContacts }: Props) {
       <button className="contacts-link" onClick={onEditContacts}>
         {hasContacts ? `${contacts.length}/5 contacts` : 'Add contacts'} →
       </button>
+
+      {canInstall && (
+        <button className="install-btn" onClick={install}>
+          Add to home screen ↓
+        </button>
+      )}
+      {showIOSHint && (
+        <p className="install-hint">Tap Share then &ldquo;Add to Home Screen&rdquo; to install</p>
+      )}
     </div>
   )
 }
