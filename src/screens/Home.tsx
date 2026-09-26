@@ -17,9 +17,8 @@ export default function Home({ onEditContacts }: Props) {
     const numbers = contacts.map(c => c.phone)
     const body = encodeURIComponent(MESSAGE)
     const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent)
-    // + must be %2B inside query params — unencoded + decodes as a space
     const uri = isIOS
-      ? `sms://open?addresses=${numbers.map(encodeURIComponent).join(',')}&body=${body}`
+      ? `sms:${numbers.join(',')}?body=${body}`
       : `sms:${numbers.join(';')}?body=${body}`
     window.location.href = uri
   }
