@@ -1,6 +1,19 @@
-const CACHE = 'mywell-v3'
+const CACHE = 'mywell-v4'
 
-self.addEventListener('install', () => self.skipWaiting())
+const SHELL = [
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
+]
+
+self.addEventListener('install', e => {
+  e.waitUntil(
+    caches.open(CACHE).then(c => c.addAll(SHELL))
+  )
+  self.skipWaiting()
+})
 
 self.addEventListener('activate', e => {
   e.waitUntil(
@@ -28,15 +41,21 @@ self.addEventListener('fetch', e => {
     return
   }
 
-  // HTML and everything else — network-first, cache as fallback
-  e.respondWith(
-    fetch(request)
-      .then(r => {
-        if (request.mode === 'navigate') {
+  // HTML — network-first, guaranteed cache fallback (shell pre-cached on install)
+  if (request.mode === 'navigate') {
+    e.respondWith(
+      fetch(request)
+        .then(r => {
           caches.open(CACHE).then(c => c.put(request, r.clone()))
-        }
-        return r
-      })
-      .catch(() => caches.match(request))
+          return r
+        })
+        .catch(() => caches.match('/index.html'))
+    )
+    return
+  }
+
+  // Everything else — network-first, cache fallback, no blank on failure
+  e.respondWith(
+    fetch(request).catch(() => caches.match(request))
   )
 })
