@@ -14,9 +14,13 @@ export default function Home({ onEditContacts }: Props) {
 
   function sendAlert() {
     if (!hasContacts) return
-    const numbers = contacts.map(c => c.phone).join(',')
+    const numbers = contacts.map(c => c.phone)
     const body = encodeURIComponent(MESSAGE)
-    window.location.href = `sms:${numbers}?body=${body}`
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent)
+    const uri = isIOS
+      ? `sms://open?addresses=${numbers.join(',')}&body=${body}`
+      : `sms:${numbers.join(';')}?body=${body}`
+    window.location.href = uri
   }
 
   return (
